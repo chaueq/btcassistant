@@ -96,7 +96,8 @@ async function updateInv(inv) {
   const tax = Math.max(0, (value - boughtFor - fee) * 0.19);
   const income = value - (boughtFor + tax + fee);
   const incPrcnt = 100 * income / boughtFor;
-  const strong = Math.abs(incPrcnt) >= 10;
+  const strong = (incPrcnt > 0) ? assessSell(fields[0].innerText, incPrcnt + 10) : (incPrcnt < -2.5);
+
 
   fields[3].innerText = value.toFixed(2);
   fields[4].innerText = fee.toFixed(2);
