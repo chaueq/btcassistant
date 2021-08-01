@@ -62,6 +62,9 @@ function assessSell(date, incomePrcnt) {
     }
   }
 
+  if(incomes.length == 0)
+    return true;
+
   let incomesAvg = 0;
   for(let i = 0; i < incomes.length; ++i) {
     incomesAvg += incomes[i];
