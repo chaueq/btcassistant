@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>BTC Assistant</title>
+  <link rel="stylesheet" type="text/css" href="styles.css" media="screen" />
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+  <script type="text/javascript" src="lib.js"></script>
+</head>
+
+<body>
+  <div class="box wide">
+    <div class="boxLabel">
+        Current Price [zł]
+      </div>
+    <div id="currentStats" class="boxStats">
+      <canvas id="hourlyChart" class="wideChart"></canvas>
+      <div style="color: #b56606;" class="boxContent bigBox" id="currentPrice">
+        0.0
+      </div>
+    </div>
+  </div>
+
+  <div class="boxesContainer">
+    <div class="box">
+      <div class="boxLabel">
+        CMP to Daily Avarage
+      </div>
+      <div id="dailyStats" class="boxStats">
+        <canvas id="dailyChart" class="avgChart"></canvas>
+        <div id="dailyPrcnt" class="boxContent">
+          ± 0.0 %
+        </div>
+        <div class="boxSubContent">
+          <span id="dailyNorm">0.0</span>
+          <span id="dailyCmp">± 0.0</span>
+        </div>
+      </div>
+    </div>
+    <div class="box">
+      <div class="boxLabel">
+        CMP to Weekly Avarage
+      </div>
+      <div id="weeklyStats" class="boxStats">
+        <canvas id="weeklyChart" class="avgChart"></canvas>
+        <div id="weeklyPrcnt" class="boxContent">
+          ± 0.0
+        </div>
+        <div class="boxSubContent">
+          <span id="weeklyNorm">0.0</span>
+          <span id="weeklyCmp">± 0.0</span>
+        </div>
+      </div>
+    </div>
+    <br class="betweenBoxes">
+    <div class="box">
+      <div class="boxLabel">
+        CMP to Monthly Avarage
+      </div>
+      <div id="monthlyStats" class="boxStats">
+        <canvas id="monthlyChart" class="avgChart"></canvas>
+        <div id="monthlyPrcnt" class="boxContent">
+          ± 0.0
+        </div>
+        <div class="boxSubContent">
+          <span id="monthlyNorm">0.0</span>
+          <span id="monthlyCmp">± 0.0</span>
+        </div>
+      </div>
+    </div>
+    <div class="box">
+      <div class="boxLabel">
+        CMP to Yearly Avarage
+      </div>
+      <div id="yearlyStats" class="boxStats">
+        <canvas id="yearlyChart" class="avgChart"></canvas>
+        <div id="yearlyPrcnt" class="boxContent">
+          ± 0.0
+        </div>
+        <div class="boxSubContent">
+          <span id="yearlyNorm">0.0</span>
+          <span id="yearlyCmp">± 0.0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="invContainer" class="investmentsContainer">
+    <div class="invRecord invHeader">
+      <div class="invValue">
+        Date
+      </div>
+      <div class="invValue">
+        Amount
+      </div>
+      <div class="invValue">
+        Bought for
+      </div>
+      <div class="invValue">
+        Value
+      </div>
+      <div class="invValue">
+        Fee
+      </div>
+      <div class="invValue">
+        Tax
+      </div>
+      <div class="invValue">
+        Income [zł]
+      </div>
+      <div class="invValue">
+        Income [%]
+      </div>
+    </div>
+  </div>
+
+  <div class="button btnLeft" onclick="window.location.href = 'list.html'">
+    📈
+  </div>
+
+  <div class="button btnRight" onclick="window.location.href = 'settings.html'">
+    ⚙️
+  </div>
+
+  <script type="text/javascript" src="index.js">
+  </script>
+</body>
+
+</html>

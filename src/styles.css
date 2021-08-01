@@ -1,0 +1,251 @@
+body {
+  background-color: #202020;
+  color: #d0d0d0;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+div.box {
+  height: 20vh;
+  width: 50vw;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  white-space: nowrap;
+  border-top: #303030 solid 1px;
+  border-bottom: #303030 solid 1px;
+  border-right: #303030 solid 1px;
+  background-color: #202020;
+}
+
+div.boxesContainer {
+  height: 40vh;
+  width: 100vw;
+  overflow: visible;
+  white-space: nowrap;
+  font-size: 0;
+}
+
+div.wide {
+  width: 100vw;
+}
+
+div.boxContent {
+  width: 100%;
+  height: 60%;
+  line-height: 12vh;
+  font-size: 10vh;
+  /* background-color: #252525; */
+}
+
+div.bigBox {
+  height: 80%;
+  line-height: 16vh;
+  font-size: 12vh;
+}
+
+div.boxSubContent {
+  width: 100%;
+  height: 20%;
+  line-height: 4vh;
+  font-size: 3vh;
+}
+
+div.boxStats {
+  background-color: #252525;
+  position: relative;
+}
+
+div.boxLabel {
+  font-size: 2vh;
+  line-height: 4vh;
+}
+
+div.secondPlan {
+  color: #b0b0b0;
+  font-size: .8ch;
+  line-height: 16vh;
+  display: inline;
+}
+
+div.investmentsContainer {
+  white-space: nowrap;
+  text-align: center;
+  width: 100%;
+  height: 40vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  font-size: 0;
+  margin: 3px 0 0 0;
+  padding: 0;
+  background-color: #202020;
+}
+
+div.invRecord {
+  height: 4vh;
+  line-height: 4vh;
+  margin: 0;
+  background-color: #252525;
+}
+
+div.invValue {
+  display: inline-block;
+  width: calc(12.5vw - 1px);
+  text-align: center;
+  height: 100%;
+  margin: 0;
+  border: #303030 solid 1px;
+  border-right: none;
+  font-size: 2vh;
+  color: #d0d0d0;
+}
+
+div.invListValue {
+  display: inline-block;
+  width: calc(25vw - 1px);
+  text-align: center;
+  height: 100%;
+  margin: 0;
+  border: #303030 solid 1px;
+  border-right: none;
+  font-size: 2vh;
+  color: #d0d0d0;
+}
+
+div.invHeader {
+  background-color: #202020;
+  top: 0;
+  position: sticky;
+}
+
+div.button {
+  position: absolute;
+  top: 0;
+  height: 4vh;
+  line-height: 4vh;
+  font-size: 2vh;
+  opacity: 0.1;
+  transition: all ease-in 0.1s;
+  cursor: pointer;
+  user-select: none;
+
+}
+
+div.button:hover {
+  opacity: 1;
+}
+
+div.btnLeft {
+  left: 0.5vw;
+}
+
+div.btnRight {
+  right: 0.5vw;
+}
+
+div.pageHeader {
+  width: 100%;
+  height: 4vh;
+  line-height: 4vh;
+}
+
+div.pageBody {
+  background-color: #252525;
+  width: 100%;
+  height: 96vh;
+}
+
+div.popup {
+  position: absolute;
+  top: 30vh;
+  left: 40vw;
+  right: 40vw;
+  bottom: 30vh;
+  height: 40vh;
+  width: 20vw;
+  transition: all ease-in 0.5s;
+  border: #505050 solid 1px;
+  padding: 10px;
+  background-color: #202020
+}
+
+.popupElement {
+  width: 90%;
+}
+
+input.popupElement {
+  margin-bottom: 5vh;
+}
+
+div.hidden {
+  opacity: 0;
+}
+
+div.popupButton {
+  width: 45%;
+  border: #505050 solid 1px;
+  display: inline-block;
+  transition: all ease-in 0.1s;
+  cursor: pointer;
+  user-select: none;
+}
+
+div.popupButton:hover {
+  border-color: #a0a0a0;
+}
+
+canvas.avgChart, canvas.wideChart {
+  width: 50vw;
+  height: 16vh;
+  opacity: 0.05;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+canvas.wideChart {
+  width: 100vw;
+}
+
+@media (min-width: 1200px) {
+  div.box {
+    width: 25vw;
+  }
+
+  canvas.avgChart {
+    width: 25vw;
+  }
+
+  br.betweenBoxes {
+    display: none;
+  }
+
+  div.boxesContainer {
+    height: 20vh;
+  }
+
+  div.boxContent {
+    font-size: 8vh;
+  }
+
+  div.bigBox {
+    font-size: 12vh;
+  }
+
+  div.wide {
+    width: 100vw;
+  }
+
+  div.investmentsContainer {
+    height: 60vh;
+  }
+
+  canvas.wideChart {
+    width: 100vw;
+  }
+
+}

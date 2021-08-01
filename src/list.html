@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>BTC Assistant</title>
+  <link rel="stylesheet" type="text/css" href="styles.css" media="screen" />
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+  <script type="text/javascript" src="lib.js"></script>
+</head>
+
+<body>
+
+  <div class="button btnLeft" onclick="window.location.href = 'index.html'">
+    ⬅️
+  </div>
+
+  <div id="btnAddInv" class="button btnRight" style="font-size: 5vh; text-decoration: bold; color: #a5ffa5">
+    +
+  </div>
+
+
+  <div class="pageHeader">
+    Investments
+  </div>
+
+  <div id="invContainer" class="pageBody investmentsContainer">
+    <div class="invRecord invHeader">
+      <div class="invValue invListValue">
+        Date
+      </div>
+      <div class="invValue invListValue">
+        Amount
+      </div>
+      <div class="invValue invListValue">
+        Bought for
+      </div>
+      <div class="invValue invListValue">
+        Actions
+      </div>
+    </div>
+  </div>
+
+  <div id="invForm" class="popup hidden">
+    <h3>Add Investment</h3>
+    <span class="popupElement">Date</span>
+    <br>
+    <input class="popupElement" type="date" id="date">
+    <span class="popupElement">Amount</span>
+    <br>
+    <input class="popupElement" min="0.00000001" type="number" id="amount" value="0.00000000" step="0.0001">
+    <span class="popupElement">Bought For</span>
+    <br>
+    <input class="popupElement" min="0.01" type="number" id="boughtFor" value="0.00" step="0.01">
+    <div id="cancelButton" class="popupButton">
+      Cancel
+    </div>
+    <div id="addButton" class="popupButton">
+      Add
+    </div>
+  </div>
+
+  <script type="text/javascript" src="list.js">
+  </script>
+</body>
+
+</html>

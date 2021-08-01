@@ -1,0 +1,3 @@
+function assesSell(date, incomePrcnt) {
+
+}
