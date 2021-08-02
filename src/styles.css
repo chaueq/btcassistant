@@ -55,7 +55,7 @@ div.boxSubContent {
   font-size: 3vh;
 }
 
-div.boxStats {
+div.boxBody {
   background-color: #252525;
   position: relative;
 }
@@ -151,6 +151,7 @@ div.pageHeader {
   width: 100%;
   height: 4vh;
   line-height: 4vh;
+  font-size: 2vh;
 }
 
 div.pageBody {
@@ -211,7 +212,7 @@ canvas.wideChart {
   width: 100vw;
 }
 
-@media (min-width: 1200px) {
+@media (min-aspect-ratio: 3/2) {
   div.box {
     width: 25vw;
   }
