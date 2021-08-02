@@ -44,16 +44,16 @@ function assessSell(date, incomePrcnt) {
 
   const incomes = [];
   for(let buy = 0; buy < data.length; ++buy) {
-    const buy_price = data[buy][0] * 1.025;
+    const buy_price = data[buy][0] * 1 + (getSettings().buyFee / 100);
     if(buy_price > norm)
       continue;
 
     for(let sell = buy+1; sell < data.length; ++sell) {
-      const sell_price = data[sell][0] / 1.025;
+      const sell_price = data[sell][0] / 1 + (getSettings().sellFee / 100);
       if(sell_price < buy_price)
         continue;
 
-      const inc = (sell_price - buy_price) * 0.81;
+      const inc = (sell_price - buy_price) * (1 - (getSettings().incomeTax / 100));
       const incPrcnt = 100 * inc / buy_price;
       if(isNaN(date))
         incomes.push(incPrcnt)

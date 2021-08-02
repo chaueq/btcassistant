@@ -1,3 +1,6 @@
+const settings = getSettings();
+document.body.style.filter += ' brightness(' + settings.brightness.toFixed(2) + ')';
+
 document.getElementById('btnAddInv').addEventListener('click', displayInvForm);
 document.getElementById('cancelButton').addEventListener('click', () => {
  document.getElementById('invForm').classList.add('hidden');

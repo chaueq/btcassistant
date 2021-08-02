@@ -1,9 +1,13 @@
+const settings = getSettings();
+document.body.style.filter += ' brightness(' + settings.brightness.toFixed(2) + ')';
+for(const chart of document.getElementsByTagName("canvas")) {
+  chart.style.opacity = settings.chartsOpacity;
+}
+
 const invs = getInvestments();
 for(var i = 0; i < invs.length; ++i) {
   appendInv(invs[i].date, invs[i].amount, invs[i].boughtFor);
 }
-// appendInv('04-07-2021', 0.00078409, 105.18);
-// appendInv('08-07-2021', 0.00034542, 45.46);
 appendInvTotal();
 
 updateAll();

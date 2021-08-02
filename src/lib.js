@@ -77,6 +77,31 @@ function getData() {
   return JSON.parse(window.localStorage.getItem('data'));
 }
 
+function setSettings(settings) {
+  settings = JSON.stringify(settings);
+  window.localStorage.setItem('settings', settings);
+}
+
+function getSettings() {
+  try {
+    const string = window.localStorage.getItem('settings');
+    if(string == null)
+      throw null;
+    return JSON.parse(string);
+  }
+  catch(e) {
+    const settings = {
+      brightness: 1,
+      chartsOpacity: 0.05,
+      incomeTax: 19,
+      buyFee: 2.5,
+      sellFee: 2.5
+    }
+    setSettings(settings);
+    return settings;
+  }
+}
+
 async function updateHourlyChart() {
   const data = getData().prices.hour.prices.reverse();
   const canvas = document.getElementById('hourlyChart');
@@ -92,8 +117,8 @@ async function updateInv(inv) {
   const amount = Number(fields[1].innerText);
   const boughtFor = Number(fields[2].innerText);
   const value = getCurrentPrice() * amount;
-  const fee = value * 0.025;
-  const tax = Math.max(0, (value - boughtFor - fee) * 0.19);
+  const fee = value * (getSettings().sellFee / 100);
+  const tax = Math.max(0, (value - boughtFor - fee) * (getSettings().incomeTax / 100));
   const income = value - (boughtFor + tax + fee);
   const incPrcnt = 100 * income / boughtFor;
   const strong = (incPrcnt > 0) ? assessSell(fields[0].innerText, incPrcnt) : (incPrcnt < -2.5);
