@@ -1,20 +1,42 @@
 function assessSell(date, incomePrcnt) {
   date = Date.parse(date)/1000;
   const time = Date.now()/1000;
-  const data = getData().prices.all.prices.reverse();
-  for(let i = 1; i < data.length; ++i) {
-    if(data[i][1] == data[i-1][1]) {
-      data.splice(i, 1);
-      --i;
-    }
+  const allData = getData().prices.all.prices.reverse();
+
+  for(let i = 0; i < allData.length; ++i) {
+    allData[i][0] = Number(allData[i][0]);
+    allData[i][1] = Number(allData[i][1]);
+  }
+  let max = 0;
+  for(let i = 1; i < allData.length; ++i) {
+    if(allData[i][0] > allData[max][0])
+      max = i;
   }
 
-
+  const sinceMax = time - allData[max][1];
+  const data =
+    (sinceMax < 3600) ? getData().prices.hour.prices.reverse() :
+    (sinceMax < 86400) ? getData().prices.day.prices.reverse() :
+    (sinceMax < 604800) ? getData().prices.week.prices.reverse() :
+    (sinceMax < 2592000) ? getData().prices.month.prices.reverse() :
+    (sinceMax < 31536000) ? getData().prices.year.prices.reverse() :
+    [...allData, ...getData().prices.year.prices.reverse()];
   for(let i = 0; i < data.length; ++i) {
     data[i][0] = Number(data[i][0]);
     data[i][1] = Number(data[i][1]);
   }
-  let max = 0;
+  if(sinceMax >= 31536000) {
+    data.sort((a,b) => {
+      return a[1] - b[1];
+    })
+    for(let i = 1; i < data.length; ++i) {
+      if(data[i][1] == data[i-1][1]) {
+        data.splice(i, 1);
+        --i;
+      }
+    }
+  }
+  max = 0;
   for(let i = 1; i < data.length; ++i) {
     if(data[i][0] > data[max][0])
       max = i;
