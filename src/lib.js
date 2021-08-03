@@ -115,7 +115,8 @@ function getAdLastShown() {
 }
 
 function showAd() {
-  document.getElementById('aads').contentWindow.location.reload();
+  const iframe = document.getElementById('aads');
+  iframe.src = iframe.src;
   const last = getAdLastShown();
   const time = Math.floor(Date.now() / 1000);
   const delay = Math.max(60, last + 3600 - time);
