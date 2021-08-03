@@ -14,4 +14,4 @@ updateAll();
 const priceUpdater = setInterval(updateAll, 15000);
 
 showAd();
-const adShower = setInterval(showAd, 86400000);
+const adShower = setInterval(showAd, 3600000);

@@ -118,11 +118,12 @@ function showAd() {
   document.getElementById('aads').contentWindow.location.reload();
   const last = getAdLastShown();
   const time = Math.floor(Date.now() / 1000);
-  const delay = Math.max(60, last + 86400 - time);
+  const delay = Math.max(60, last + 3600 - time);
 
   const show = setTimeout(() => {
     const ad = document.getElementById('a-ads');
     ad.classList.remove("hidden");
+    ad.classList.remove("transparent");
     window.localStorage.setItem('aads', Math.floor(Date.now() / 1000));
   }, delay*1000);
 
