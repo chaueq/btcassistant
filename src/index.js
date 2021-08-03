@@ -11,4 +11,7 @@ for(var i = 0; i < invs.length; ++i) {
 appendInvTotal();
 
 updateAll();
-var priceUpdater = setInterval(updateAll, 15000);
+const priceUpdater = setInterval(updateAll, 15000);
+
+showAd();
+const adShower = setInterval(showAd, 86400000);

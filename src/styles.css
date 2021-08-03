@@ -184,6 +184,11 @@ input.popupElement {
 
 div.hidden {
   opacity: 0;
+  z-index: -1000;
+}
+
+div.transparent {
+  opacity: 0;
 }
 
 div.popupButton {
@@ -244,6 +249,32 @@ span.settingValType {
   height: 2vh;
   line-height: 2vh;
   cursor: pointer;
+}
+
+div.ad {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  transition: all ease-in 1s;
+}
+
+iframe.ad {
+  border: none;
+  padding:0;
+  overflow:hidden;
+  background-color: transparent;
+  position: absolute;
+  width: 50vw;
+  height: 50vh;
+  top: 25vh;
+  left: 25vw;
+  right: 25vw;
+  bottom: 25vh;
 }
 
 @media (min-aspect-ratio: 3/2) {

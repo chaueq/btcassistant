@@ -102,6 +102,41 @@ function getSettings() {
   }
 }
 
+function getAdLastShown() {
+  try {
+    const string = window.localStorage.getItem('aads');
+    if(string == null)
+      throw null;
+    return Number(string);
+  }
+  catch(e) {
+    return 0;
+  }
+}
+
+function showAd() {
+  document.getElementById('aads').contentWindow.location.reload();
+  const last = getAdLastShown();
+  const time = Math.floor(Date.now() / 1000);
+  const delay = Math.max(60, last + 86400 - time);
+
+  const show = setTimeout(() => {
+    const ad = document.getElementById('a-ads');
+    ad.classList.remove("hidden");
+    window.localStorage.setItem('aads', Math.floor(Date.now() / 1000));
+  }, delay*1000);
+
+  const hide1 = setTimeout(() => {
+    const ad = document.getElementById('a-ads');
+    ad.classList.add("transparent");
+  }, (delay + 16) * 1000);
+  const hide2 = setTimeout(() => {
+    const ad = document.getElementById('a-ads');
+    ad.classList.add("hidden");
+  }, (delay + 17) * 1000);
+
+}
+
 async function updateHourlyChart() {
   const data = getData().prices.hour.prices.reverse();
   const canvas = document.getElementById('hourlyChart');
