@@ -95,7 +95,8 @@ function getSettings() {
       chartsOpacity: 0.05,
       incomeTax: 19,
       buyFee: 2.5,
-      sellFee: 2.5
+      sellFee: 2.5,
+      hideSensitive: 0
     }
     setSettings(settings);
     return settings;
@@ -160,12 +161,18 @@ async function updateInv(inv) {
   const incPrcnt = 100 * income / boughtFor;
   const strong = (incPrcnt > 0) ? assessSell(fields[0].innerText, incPrcnt) : (incPrcnt < -2.5);
 
-
   fields[3].innerText = value.toFixed(2);
   fields[4].innerText = fee.toFixed(2);
   fields[5].innerText = (tax > 0) ? tax.toFixed(2) : '-';
   writeValue(fields[6], income, strong);
   writeValue(fields[7], incPrcnt, strong, ' %');
+
+  if(getSettings().hideSensitive) {
+    for(let i = 1; i <= 6; ++i) {
+      fields[i].style.color = "rgba(0,0,0,0)";
+      fields[i].classList.add('disableSelect');
+    }
+  }
 }
 
 async function updateAllInv() {
