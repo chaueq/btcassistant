@@ -48,20 +48,33 @@ function appendInv(date, amount, boughtFor) {
   for(var i = 0; i < 5; ++i)
     appendInvField(inv, '-');
 
+  if(getSettings().hideSensitive) {
+    const fields = inv.getElementsByClassName('invValue');
+    for(let i = 1; i <= 6; ++i) {
+      fields[i].style.color = "rgba(0,0,0,0)";
+      fields[i].classList.add('disableSelect');
+    }
+  }
+
   return document.getElementById('invContainer').appendChild(inv);
 }
 
 function appendInvTotal() {
-  let totalAmount = 0;
-  let totalBoughtFor = 0;
-  const invs = document.getElementsByClassName('invRecord');
-  for(let i = 1; i < invs.length; ++i) {
-    const amount = Number(invs[i].getElementsByClassName('invValue')[1].innerText);
-    const boughtFor = Number(invs[i].getElementsByClassName('invValue')[2].innerText);
-    totalAmount += amount;
-    totalBoughtFor += boughtFor;
-  }
-  appendInv('Total', totalAmount, totalBoughtFor).classList.add('invHeader');
+  appendInv('Total', 0, 0).classList.add('invHeader');
+}
+
+function getInvTotal() {
+    const totalInv = {
+      date: 'Total',
+      amount: 0,
+      boughtFor: 0
+    }
+    const invs = getInvestments();
+    for(let i = 0; i < invs.length; ++i) {
+      totalInv.amount += invs[i].amount;
+      totalInv.boughtFor += invs[i].boughtFor;
+    }
+    return totalInv;
 }
 
 async function updateData() {
@@ -157,15 +170,15 @@ async function updateHourlyChart() {
   drawChart(canvas, data);
 }
 
-async function updateInv(inv) {
-  const fields = inv.getElementsByClassName('invValue');
-  const amount = Number(fields[1].innerText);
-  const boughtFor = Number(fields[2].innerText);
-  const value = getCurrentPrice() * amount;
+async function updateInv(invId) {
+  const invs = getInvestments();
+  const inv = invId <= invs.length ? invs[invId-1] : getInvTotal();
+  const fields = document.getElementsByClassName('invRecord')[invId].getElementsByClassName('invValue');
+  const value = getCurrentPrice() * inv.amount;
   const fee = value * (getSettings().sellFee / 100);
-  const tax = Math.max(0, (value - boughtFor - fee) * (getSettings().incomeTax / 100));
-  const income = value - (boughtFor + tax + fee);
-  const incPrcnt = 100 * income / boughtFor;
+  const tax = Math.max(0, (value - inv.boughtFor - fee) * (getSettings().incomeTax / 100));
+  const income = value - (inv.boughtFor + tax + fee);
+  const incPrcnt = 100 * income / inv.boughtFor;
   const strong = (incPrcnt > 0) ? assessSell(incPrcnt) : (incPrcnt < -2.5);
 
   fields[3].innerText = value.toFixed(2);
@@ -175,10 +188,7 @@ async function updateInv(inv) {
   writeValue(fields[7], incPrcnt, strong, ' %');
 
   if(getSettings().hideSensitive) {
-    for(let i = 1; i <= 6; ++i) {
-      fields[i].style.color = "rgba(0,0,0,0)";
-      fields[i].classList.add('disableSelect');
-    }
+    fields[6].style.color = "rgba(0,0,0,0)";
   }
 }
 
@@ -186,7 +196,7 @@ async function updateAllInv() {
   updateSellAssessment();
   const invs = document.getElementsByClassName('invRecord');
   for(let i = 1; i < invs.length; ++i) {
-    updateInv(invs[i]);
+    updateInv(i);
   }
 }
 
