@@ -221,7 +221,8 @@ div.setting {
   width: 50vw;
   margin-left: 25vw;
   font-size: 2.5vh;
-  margin-bottom: 5vh;
+  margin-bottom: 2.5vh;
+  margin-top: 2.5vh;
 }
 
 div.settingLabel {
