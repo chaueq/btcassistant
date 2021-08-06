@@ -142,8 +142,6 @@ function computeSellAssessment() {
   const toReject = Math.min(incomes.length - 1, Math.round(incomes.length * sellAssessmentFastidiousness));
   incomes.splice(0, toReject);
 
-  console.log(incomes)
-
   if(incomes.length == 0) {
     assessmentData.threshold = Infinity;
     setAssessmentData(assessmentData);
@@ -162,6 +160,5 @@ function computeSellAssessment() {
   incomesDev /= incomes.length;
   incomesDev = Math.sqrt(incomesDev);
   assessmentData.threshold = incomesAvg + incomesDev;
-  console.log(assessmentData.threshold);
   setAssessmentData(assessmentData);
 }

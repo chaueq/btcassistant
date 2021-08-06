@@ -92,11 +92,12 @@ function getData() {
 
 function setSettings(settings) {
   const old = getSettings();
+  const sellAssessmentFastidiousnessChanged = (old.sellAssessmentFastidiousness != settings.sellAssessmentFastidiousness);
 
   settings = JSON.stringify(settings);
   window.localStorage.setItem('settings', settings);
 
-  if(old.sellAssessmentFastidiousness != settings.sellAssessmentFastidiousness) {
+  if(sellAssessmentFastidiousnessChanged) {
     computeSellAssessment();
   }
 }
