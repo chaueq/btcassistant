@@ -323,3 +323,34 @@ iframe.ad {
   -ms-user-select: none;
   user-select: none;
 }
+
+div#offlineNotif {
+  border-radius: 5vmin;
+  border-color: #d0d0d0;
+  border-style: solid;
+  border-width: 0.5vmin;
+  line-height: 3vh;
+  background-color: darkred;
+  color: white;
+  position: absolute;
+  top: calc(30vh - .5vmin);
+  left: calc(40vw - .5vmin);
+  width: 20vw;
+  height: 20vh;
+  overflow: hidden;
+  transition: all ease-in 0.3s;
+}
+
+div.offlineNotifSmall {
+  font-size: 3vh;
+  line-height: 3vh;
+  margin-top: 1.5vh;
+  margin-bottom: 1.5vh;
+}
+
+div.offlineNotifBig {
+  margin-top: 1.5vh;
+  font-size: 4vh;
+  line-height: 4vh;
+  margin-bottom: 1vh;
+}

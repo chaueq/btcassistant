@@ -1,5 +1,5 @@
 function getCurrentPrice() {
-  return Number(document.getElementById("currentPrice").textContent);
+  return getData().prices.latest;
 }
 
 function writeValue(obj, value, strong, suffix='', neutral=false, symbol='') {
@@ -78,12 +78,17 @@ function getInvTotal() {
 }
 
 async function updateData() {
-  let response = await fetch("https://www.coinbase.com/api/v2/assets/prices/5b71fc48-3dd3-540c-809b-f8c94d0e68b5?base=PLN");
-  if (response.ok) {
-    let data = await response.json();
-    data = JSON.stringify(data.data);
-    window.localStorage.setItem('data', data);
-  }
+    let response = await fetch("https://www.coinbase.com/api/v2/assets/prices/5b71fc48-3dd3-540c-809b-f8c94d0e68b5?base=PLN");
+    if (response.ok) {
+      let data = await response.json();
+      data = data.data
+      data.timestamp = Math.floor(Date.now()/1000);
+      data = JSON.stringify(data);
+      window.localStorage.setItem('data', data);
+    }
+    else {
+      onOffline();
+    }
 }
 
 function getData() {
@@ -194,7 +199,6 @@ async function updateInv(invId) {
 }
 
 async function updateAllInv() {
-  updateSellAssessment();
   const invs = document.getElementsByClassName('invRecord');
   for(let i = 1; i < invs.length; ++i) {
     updateInv(i);
@@ -244,14 +248,25 @@ async function updateAvarage(name, timespan) {
 }
 
 async function updateAll() {
-  await updateData();
-  await updateCurrentPrice();
-  updateAvarage('daily', 'day', 1440);
-  updateAvarage('weekly', 'week', 168);
-  updateAvarage('monthly', 'month', 720);
-  updateAvarage('yearly', 'year', 365);
-  updateHourlyChart();
-  updateAllInv();
+  try {
+    await updateData();
+    onOnline();
+    updateSellAssessment();
+  }
+  catch(e) {
+    if(e == 'TypeError: Failed to fetch') {
+      onOffline();
+    }
+  }
+  finally {
+    updateCurrentPrice();
+    updateAvarage('daily', 'day', 1440);
+    updateAvarage('weekly', 'week', 168);
+    updateAvarage('monthly', 'month', 720);
+    updateAvarage('yearly', 'year', 365);
+    updateHourlyChart();
+    updateAllInv();
+  }
 }
 
 function getInvestments() {
@@ -364,4 +379,31 @@ function drawChart(canvas, data, avg=0) {
     ctx.lineTo(width + xPadding, avg);
   ctx.fill();
 
+}
+
+async function onOffline() {
+  const lastUpdated = new Date(getData().timestamp*1000);
+  document.getElementById('dataLastUpdated').innerText =
+    lastUpdated.getFullYear()
+    + '-'
+    + (Number(lastUpdated.getMonth()+1) < 10 ? '0' : '')
+    + (lastUpdated.getMonth()+1)
+    + '-'
+    + (Number(lastUpdated.getDate()) < 10 ? '0' : '')
+    + lastUpdated.getDate()
+    + '\n'
+    + (Number(lastUpdated.getHours()) < 10 ? '0' : '')
+    + lastUpdated.getHours()
+    + ':'
+    + (Number(lastUpdated.getMinutes()) < 10 ? '0' : '')
+    + lastUpdated.getMinutes()
+    + ':'
+    + (Number(lastUpdated.getSeconds()) < 10 ? '0' : '')
+    + lastUpdated.getSeconds()
+  ;
+  document.getElementById('offlineNotif').classList.remove('hidden');
+}
+
+async function onOnline() {
+  document.getElementById('offlineNotif').classList.add('hidden');
 }
