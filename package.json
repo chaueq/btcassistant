@@ -9,7 +9,7 @@
     "install": "sudo dpkg -i dist/installers/btcassistant_1.0.0_amd64.deb"
   },
   "author": "chaueq",
-  "license": "All Rights Reserved",
+  "license": "Specified in LICENSE.md",
   "devDependencies": {
     "electron": "^13.1.6",
     "electron-installer-snap": "^5.1.0"
