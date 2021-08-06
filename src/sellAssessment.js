@@ -1,19 +1,69 @@
-function assessSell(date, incomePrcnt) {
-  date = Date.parse(date)/1000;
-  const time = Date.now()/1000;
-  const allData = getData().prices.all.prices.reverse();
+function setAssessmentData(assessmentData) {
+  assessmentData = JSON.stringify(assessmentData);
+  window.localStorage.setItem('assessmentData', assessmentData);
+}
 
-  for(let i = 0; i < allData.length; ++i) {
-    allData[i][0] = Number(allData[i][0]);
-    allData[i][1] = Number(allData[i][1]);
+function getAssessmentData() {
+  try {
+    const string = window.localStorage.getItem('assessmentData');
+    if(string == null)
+      throw null;
+    return JSON.parse(string);
   }
+  catch(e) {
+    const assessmentData = {
+      refreshPeriod: 0,
+      lastComputed: 0,
+      maxTime: 0,
+      threshold: Infinity
+    }
+    setAssessmentData(assessmentData);
+    return assessmentData;
+  }
+}
+
+function assessSell(incomePrcnt) {
+  const assessmentData = getAssessmentData();
+  return incomePrcnt > assessmentData.threshold;
+}
+
+function updateSellAssessment() {
+  const assessmentData = getAssessmentData();
+  const data = getData();
+  const time = Math.floor(Date.now()/1000);
+  const sinceComputed = time - assessmentData.lastComputed;
+  const prices = [
+    ...data.prices.hour.prices,
+    ...data.prices.day.prices,
+    ...data.prices.week.prices,
+    ...data.prices.month.prices,
+    ...data.prices.year.prices,
+    ...data.prices.all.prices
+  ].reverse();
+
+  for(let i = 0; i < prices.length; ++i) {
+    prices[i][0] = Number(prices[i][0]);
+    prices[i][1] = Number(prices[i][1]);
+  }
+
   let max = 0;
-  for(let i = 1; i < allData.length; ++i) {
-    if(allData[i][0] > allData[max][0])
+  for(let i = 1; i < prices.length; ++i) {
+    if(prices[i][0] > prices[max][0])
       max = i;
   }
 
-  const sinceMax = time - allData[max][1];
+  assessmentData.maxTime = prices[max][1];
+
+  if(assessmentData.maxTime != prices[max][1] || sinceComputed > assessmentData.refreshPeriod) {
+    setAssessmentData(assessmentData);
+    computeSellAssessment();
+  }
+}
+
+function computeSellAssessment() {
+  const assessmentData = getAssessmentData();
+  assessmentData.lastComputed = Math.floor(Date.now()/1000);
+  const sinceMax = assessmentData.lastComputed - assessmentData.maxTime;
   const data =
     (sinceMax < 3600) ? getData().prices.hour.prices.reverse() :
     (sinceMax < 86400) ? getData().prices.day.prices.reverse() :
@@ -21,6 +71,7 @@ function assessSell(date, incomePrcnt) {
     (sinceMax < 2592000) ? getData().prices.month.prices.reverse() :
     (sinceMax < 31536000) ? getData().prices.year.prices.reverse() :
     [...allData, ...getData().prices.year.prices.reverse()];
+
   for(let i = 0; i < data.length; ++i) {
     data[i][0] = Number(data[i][0]);
     data[i][1] = Number(data[i][1]);
@@ -42,6 +93,11 @@ function assessSell(date, incomePrcnt) {
       max = i;
   }
   data.splice(0, max+1);
+
+  assessmentData.refreshPeriod = data[data.length-1][1] - data[data.length-2][1];
+  for(let i = 0; i < data.length; ++i) {
+    data[i] = data[i][0]
+  }
 
   let avg = 0;
   for (var i = 0; i < data.length; ++i) {
@@ -66,26 +122,26 @@ function assessSell(date, incomePrcnt) {
 
   const incomes = [];
   for(let buy = 0; buy < data.length; ++buy) {
-    const buy_price = data[buy][0] * (1 + (getSettings().buyFee / 100));
+    const buy_price = data[buy] * (1 + (getSettings().buyFee / 100));
     if(buy_price > norm)
       continue;
 
     for(let sell = buy+1; sell < data.length; ++sell) {
-      const sell_price = data[sell][0] / (1 + (getSettings().sellFee / 100));
+      const sell_price = data[sell] / (1 + (getSettings().sellFee / 100));
       if(sell_price < buy_price)
         continue;
 
       const inc = (sell_price - buy_price) * (1 - (getSettings().incomeTax / 100));
       const incPrcnt = 100 * inc / buy_price;
-      if(isNaN(date))
-        incomes.push(incPrcnt)
-      else
-        incomes.push(incPrcnt / (data[sell][1] - data[buy][1]));
+      incomes.push(incPrcnt);
     }
   }
 
-  if(incomes.length == 0)
-    return true;
+  if(incomes.length == 0) {
+    assessmentData.threshold = Infinity;
+    setAssessmentData(assessmentData);
+    return;
+  }
 
   let incomesAvg = 0;
   for(let i = 0; i < incomes.length; ++i) {
@@ -98,8 +154,7 @@ function assessSell(date, incomePrcnt) {
   }
   incomesDev /= incomes.length;
   incomesDev = Math.sqrt(incomesDev);
-  if(!isNaN(date))
-    incomePrcnt = incomePrcnt / (time - date);
-  const cmp = incomePrcnt - incomesAvg;
-  return (cmp > incomesDev);
+
+  assessmentData.threshold = incomesAvg + incomesDev;
+  setAssessmentData(assessmentData);
 }

@@ -159,7 +159,7 @@ async function updateInv(inv) {
   const tax = Math.max(0, (value - boughtFor - fee) * (getSettings().incomeTax / 100));
   const income = value - (boughtFor + tax + fee);
   const incPrcnt = 100 * income / boughtFor;
-  const strong = (incPrcnt > 0) ? assessSell(fields[0].innerText, incPrcnt) : (incPrcnt < -2.5);
+  const strong = (incPrcnt > 0) ? assessSell(incPrcnt) : (incPrcnt < -2.5);
 
   fields[3].innerText = value.toFixed(2);
   fields[4].innerText = fee.toFixed(2);
@@ -176,6 +176,7 @@ async function updateInv(inv) {
 }
 
 async function updateAllInv() {
+  updateSellAssessment();
   const invs = document.getElementsByClassName('invRecord');
   for(let i = 1; i < invs.length; ++i) {
     updateInv(invs[i]);
