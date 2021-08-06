@@ -1,6 +1,8 @@
 const settings = getSettings();
 for(const atr in settings) {
-  document.getElementsByName(atr)[0].value = settings[atr];
+  const obj = document.getElementsByName(atr)[0];
+  obj.value = settings[atr];
+  obj.title = settings[atr];
 }
 document.body.style.filter += ' brightness(' + settings.brightness.toFixed(2) + ')';
 
