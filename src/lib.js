@@ -51,7 +51,8 @@ function appendInv(date, amount, boughtFor) {
   if(getSettings().hideSensitive) {
     const fields = inv.getElementsByClassName('invValue');
     for(let i = 1; i <= 6; ++i) {
-      fields[i].style.color = "rgba(0,0,0,0)";
+      fields[i].innerText = '🔒';
+      fields[i].style.color = '#d0d0d020'
       fields[i].classList.add('disableSelect');
     }
   }
@@ -187,15 +188,13 @@ async function updateInv(invId) {
   const incPrcnt = 100 * income / inv.boughtFor;
   const strong = (incPrcnt > 0) ? assessSell(incPrcnt) : (incPrcnt < -2.5);
 
-  fields[3].innerText = value.toFixed(2);
-  fields[4].innerText = fee.toFixed(2);
-  fields[5].innerText = (tax > 0) ? tax.toFixed(2) : '-';
-  writeValue(fields[6], income, strong);
-  writeValue(fields[7], incPrcnt, strong, ' %');
-
-  if(getSettings().hideSensitive) {
-    fields[6].style.color = "rgba(0,0,0,0)";
+  if(!getSettings().hideSensitive) {
+    fields[3].innerText = value.toFixed(2);
+    fields[4].innerText = fee.toFixed(2);
+    fields[5].innerText = (tax > 0) ? tax.toFixed(2) : '-';
+    writeValue(fields[6], income, strong);
   }
+  writeValue(fields[7], incPrcnt, strong, ' %');
 }
 
 async function updateAllInv() {
