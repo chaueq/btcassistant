@@ -62,6 +62,7 @@ function updateSellAssessment() {
 
 function computeSellAssessment() {
   const assessmentData = getAssessmentData();
+  const sellAssessmentFastidiousness = getSettings().sellAssessmentFastidiousness;
   assessmentData.lastComputed = Math.floor(Date.now()/1000);
   const sinceMax = assessmentData.lastComputed - assessmentData.maxTime;
   const data =
@@ -137,6 +138,12 @@ function computeSellAssessment() {
     }
   }
 
+  incomes.sort((a, b) => {return a-b});
+  const toReject = Math.min(incomes.length - 1, Math.round(incomes.length * sellAssessmentFastidiousness));
+  incomes.splice(0, toReject);
+
+  console.log(incomes)
+
   if(incomes.length == 0) {
     assessmentData.threshold = Infinity;
     setAssessmentData(assessmentData);
@@ -154,7 +161,7 @@ function computeSellAssessment() {
   }
   incomesDev /= incomes.length;
   incomesDev = Math.sqrt(incomesDev);
-
   assessmentData.threshold = incomesAvg + incomesDev;
+  console.log(assessmentData.threshold);
   setAssessmentData(assessmentData);
 }

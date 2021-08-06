@@ -78,8 +78,14 @@ function getData() {
 }
 
 function setSettings(settings) {
+  const old = getSettings();
+
   settings = JSON.stringify(settings);
   window.localStorage.setItem('settings', settings);
+
+  if(old.sellAssessmentFastidiousness != settings.sellAssessmentFastidiousness) {
+    computeSellAssessment();
+  }
 }
 
 function getSettings() {
@@ -96,7 +102,8 @@ function getSettings() {
       incomeTax: 19,
       buyFee: 2.5,
       sellFee: 2.5,
-      hideSensitive: 0
+      hideSensitive: 0,
+      sellAssessmentFastidiousness: 0.5
     }
     setSettings(settings);
     return settings;
