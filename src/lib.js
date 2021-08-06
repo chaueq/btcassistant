@@ -153,7 +153,6 @@ function showAd() {
     const ad = document.getElementById('a-ads');
     ad.classList.remove("hidden");
     ad.classList.remove("transparent");
-    window.localStorage.setItem('aads', Math.floor(Date.now() / 1000));
   }, delay*1000);
 
   const hide1 = setTimeout(() => {
@@ -163,6 +162,7 @@ function showAd() {
   const hide2 = setTimeout(() => {
     const ad = document.getElementById('a-ads');
     ad.classList.add("hidden");
+    window.localStorage.setItem('aads', Math.floor(Date.now() / 1000));
   }, (delay + 17) * 1000);
 
 }
