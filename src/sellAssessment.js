@@ -222,7 +222,7 @@ function computeSellBuyScore() {
     }
   }
 
-  const score = ((beaten / (data.length/2)) - 0.5) * 100;
+  const score = ((beaten / (data.length/2)) - 1) * 100;
   assessmentData.sellBuyScore = score;
   setAssessmentData(assessmentData);
 }
