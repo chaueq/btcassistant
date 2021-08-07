@@ -11,14 +11,62 @@
 </head>
 
 <body>
-  <div class="box wide">
-    <div class="boxLabel">
-        Current Price [zł]
+  <div class="topBoxesContainer">
+    <div class="smallBoxContainer">
+      <div class="box smallBox">
+        <div class="smallBoxLabel">
+            Current Sell Price
+          </div>
+        <div class="boxBody">
+          <div class="smallBoxContent" id="currentSellPrice">
+            0.0
+          </div>
+        </div>
       </div>
-    <div id="currentStats" class="boxBody">
-      <canvas id="hourlyChart" class="wideChart"></canvas>
-      <div style="color: #b56606;" class="boxContent bigBox" id="currentPrice">
-        0.0
+      <div class="box smallBox">
+        <div class="smallBoxLabel">
+            BTC Left To Mine
+          </div>
+        <div class="boxBody">
+          <div class="smallBoxContent" id="btcLeft">
+            .
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box wide">
+      <div class="boxLabel">
+          Current Price
+        </div>
+      <div id="currentStats" class="boxBody">
+        <canvas id="hourlyChart" class="avgChart wide"></canvas>
+        <div style="color: #b56606;" class="boxContent bigBox" id="currentPrice">
+          0.0
+        </div>
+      </div>
+    </div>
+
+    <div class="smallBoxContainer">
+      <div class="box smallBox">
+        <div class="smallBoxLabel">
+            Current Buy Price
+          </div>
+        <div class="boxBody">
+          <div class="smallBoxContent" id="currentBuyPrice">
+            0.0
+          </div>
+        </div>
+      </div>
+      <div class="box smallBox">
+        <div class="smallBoxLabel">
+            <span style="color: #60ff60">Sell</span>/<span style="color: #ff6060;">Buy</span> Score
+          </div>
+        <div class="boxBody">
+          <div class="smallBoxContent" id="sellBuyScore">
+            0.0
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -108,7 +156,7 @@
         Tax
       </div>
       <div class="invValue">
-        Income [zł]
+        Income
       </div>
       <div class="invValue">
         Income [%]

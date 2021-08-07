@@ -15,7 +15,8 @@ function getAssessmentData() {
       refreshPeriod: 0,
       lastComputed: 0,
       maxTime: 0,
-      threshold: Infinity
+      threshold: Infinity,
+      sellBuyScore: 0
     }
     setAssessmentData(assessmentData);
     return assessmentData;
@@ -58,6 +59,8 @@ function updateSellAssessment() {
     setAssessmentData(assessmentData);
     computeSellAssessment();
   }
+
+  computeSellBuyScore();
 }
 
 function computeSellAssessment() {
@@ -71,7 +74,7 @@ function computeSellAssessment() {
     (sinceMax < 604800) ? getData().prices.week.prices.reverse() :
     (sinceMax < 2592000) ? getData().prices.month.prices.reverse() :
     (sinceMax < 31536000) ? getData().prices.year.prices.reverse() :
-    [...allData, ...getData().prices.year.prices.reverse()];
+    [...getData().prices.all.prices.reverse(), ...getData().prices.year.prices.reverse()];
 
   for(let i = 0; i < data.length; ++i) {
     data[i][0] = Number(data[i][0]);
@@ -160,5 +163,66 @@ function computeSellAssessment() {
   incomesDev /= incomes.length;
   incomesDev = Math.sqrt(incomesDev);
   assessmentData.threshold = incomesAvg + incomesDev;
+  setAssessmentData(assessmentData);
+}
+
+function updateSellBuyScore() {
+  const score = getAssessmentData().sellBuyScore;
+  const holder = document.getElementById('sellBuyScore');
+  const colors = {
+    negative: '#ff6060',
+    positive: '#60ff60'
+  }
+  writeValue(holder, score, false, ' %', true, '', colors);
+}
+
+function computeSellBuyScore() {
+  const assessmentData = getAssessmentData();
+  const current = getCurrentPrice();
+  const sinceMax = Math.floor(Date.now()/1000) - assessmentData.maxTime;
+  const data =
+    (sinceMax < 3600) ? getData().prices.hour.prices.reverse() :
+    (sinceMax < 86400) ? getData().prices.day.prices.reverse() :
+    (sinceMax < 604800) ? getData().prices.week.prices.reverse() :
+    (sinceMax < 2592000) ? getData().prices.month.prices.reverse() :
+    (sinceMax < 31536000) ? getData().prices.year.prices.reverse() :
+    [...getData().prices.all.prices.reverse(), ...getData().prices.year.prices.reverse()];
+
+  for(let i = 0; i < data.length; ++i) {
+    data[i][0] = Number(data[i][0]);
+    data[i][1] = Number(data[i][1]);
+  }
+  if(sinceMax >= 31536000) {
+    data.sort((a,b) => {
+      return a[1] - b[1];
+    })
+    for(let i = 1; i < data.length; ++i) {
+      if(data[i][1] == data[i-1][1]) {
+        data.splice(i, 1);
+        --i;
+      }
+    }
+  }
+  max = 0;
+  for(let i = 1; i < data.length; ++i) {
+    if(data[i][0] > data[max][0])
+      max = i;
+  }
+  data.splice(0, max+1);
+  for(let i = 0; i < data.length; ++i) {
+    data[i] = data[i][0]
+  }
+
+  data.sort((a,b) => {return a-b});
+
+  let beaten = 0;
+  for(; beaten < data.length; ++beaten) {
+    if(data[beaten] > current) {
+      break;
+    }
+  }
+
+  const score = ((beaten / (data.length/2)) - 0.5) * 100;
+  assessmentData.sellBuyScore = score;
   setAssessmentData(assessmentData);
 }

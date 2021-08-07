@@ -2,7 +2,17 @@ function getCurrentPrice() {
   return getData().prices.latest;
 }
 
-function writeValue(obj, value, strong, suffix='', neutral=false, symbol='') {
+function writeValue(obj, value, strong, suffix='', neutral=false, symbol='', colorsOverwrite=[]) {
+  const colors = {
+    negative: '#ffa0a0',
+    negativeStrong: '#ff0000',
+    positive: '#a0ffa0',
+    positiveStrong: '#00ff00',
+    neutral: '#d0d0d0'
+  }
+  for(atr in colorsOverwrite) {
+    colors[atr] = colorsOverwrite[atr];
+  }
   if(symbol == '') {
     if(value > 0)
       symbol = '+'
@@ -14,18 +24,18 @@ function writeValue(obj, value, strong, suffix='', neutral=false, symbol='') {
   var txt = neutral ? Number(Math.abs(value)).toFixed(2) + suffix : symbol + ' ' + Number(Math.abs(value)).toFixed(2) + suffix;
   if (symbol == '+') {
     if (strong)
-      color = '#00ff00'
+      color = colors.positiveStrong;
     else
-      color = '#a0ffa0'
+      color = colors.positive;
   }
   else if (symbol == '-') {
     if (strong)
-      color = '#ff0000'
+      color = colors.negativeStrong;
     else
-      color = '#ffa0a0'
+      color = colors.negative;
   }
   else
-    color = '#d0d0d0'
+    color = colors.neutral;
 
   obj.innerText = txt;
   obj.style.color = color;
@@ -76,6 +86,36 @@ function getInvTotal() {
       totalInv.boughtFor += invs[i].boughtFor;
     }
     return totalInv;
+}
+
+async function updateDataBTCLeft() {
+  let response = await fetch("https://api.blockchain.info/charts/total-bitcoins?timespan=1year&sampled=true&metadata=false&cors=true&format=json");
+  if(response.ok) {
+    let btcMined = await response.json();
+    btcMined = btcMined.values;
+    btcMined = btcMined[btcMined.length-1].y;
+    let btcLeft = 21000000 - Number(btcMined);
+    window.localStorage.setItem('btcLeft', btcLeft);
+  }
+  else {
+    onOffline();
+  }
+}
+
+function getBTCLeft() {
+  try {
+    const string = window.localStorage.getItem('btcLeft');
+    if(string == null)
+      throw null;
+    return Number(string);
+  }
+  catch(e) {
+    return 21000000;
+  }
+}
+
+async function updateBTCLeft() {
+  document.getElementById('btcLeft').innerText = (getBTCLeft() * 100 / 21000000).toFixed(2) + '%';
 }
 
 async function updateData() {
@@ -205,8 +245,15 @@ async function updateAllInv() {
 }
 
 async function updateCurrentPrice() {
-  let data = getData();
-  document.getElementById('currentPrice').textContent = Number(data.prices.latest).toFixed(2);
+  const data = getData();
+  const settings = getSettings();
+  const raw = Number(data.prices.latest);
+  const sell = raw * (1 - (settings.sellFee/100));
+  const buy = raw * (1 + (settings.buyFee/100));
+
+  document.getElementById('currentPrice').textContent = raw.toFixed(2);
+  document.getElementById('currentSellPrice').textContent = sell.toFixed(2);
+  document.getElementById('currentBuyPrice').textContent = buy.toFixed(2);
 }
 
 async function updateAvarage(name, timespan) {
@@ -248,7 +295,10 @@ async function updateAvarage(name, timespan) {
 
 async function updateAll() {
   try {
-    await updateData();
+    await Promise.all([
+      updateData(),
+      updateDataBTCLeft()
+    ]);
     onOnline();
     updateSellAssessment();
   }
@@ -259,6 +309,8 @@ async function updateAll() {
   }
   finally {
     updateCurrentPrice();
+    updateBTCLeft();
+    updateSellBuyScore();
     updateAvarage('daily', 'day', 1440);
     updateAvarage('weekly', 'week', 168);
     updateAvarage('monthly', 'month', 720);
