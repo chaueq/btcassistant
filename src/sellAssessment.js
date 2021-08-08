@@ -180,27 +180,26 @@ function computeSellBuyScore() {
   const assessmentData = getAssessmentData();
   const current = getCurrentPrice();
   const sinceMax = Math.floor(Date.now()/1000) - assessmentData.maxTime;
-  const data =
-    (sinceMax < 3600) ? getData().prices.hour.prices.reverse() :
-    (sinceMax < 86400) ? getData().prices.day.prices.reverse() :
-    (sinceMax < 604800) ? getData().prices.week.prices.reverse() :
-    (sinceMax < 2592000) ? getData().prices.month.prices.reverse() :
-    (sinceMax < 31536000) ? getData().prices.year.prices.reverse() :
-    [...getData().prices.all.prices.reverse(), ...getData().prices.year.prices.reverse()];
-
+  const datas = getData();
+  const data = [
+    ...datas.prices.hour.prices,
+    ...datas.prices.day.prices,
+    ...datas.prices.week.prices,
+    ...datas.prices.month.prices,
+    ...datas.prices.year.prices,
+    ...datas.prices.all.prices    
+  ];
   for(let i = 0; i < data.length; ++i) {
     data[i][0] = Number(data[i][0]);
     data[i][1] = Number(data[i][1]);
   }
-  if(sinceMax >= 31536000) {
-    data.sort((a,b) => {
-      return a[1] - b[1];
-    })
-    for(let i = 1; i < data.length; ++i) {
-      if(data[i][1] == data[i-1][1]) {
-        data.splice(i, 1);
-        --i;
-      }
+  data.sort((a,b) => {
+    return a[1] - b[1];
+  })
+  for(let i = 1; i < data.length; ++i) {
+    if(data[i][1] == data[i-1][1]) {
+      data.splice(i, 1);
+      --i;
     }
   }
   max = 0;
