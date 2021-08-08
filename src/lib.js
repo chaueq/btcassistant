@@ -71,7 +71,8 @@ function appendInv(date, amount, boughtFor) {
 }
 
 function appendInvTotal() {
-  appendInv('Total', 0, 0).classList.add('invHeader');
+  const totalInv = getInvTotal();
+  appendInv(totalInv.date, totalInv.amount, totalInv.boughtFor).classList.add('invHeader');
 }
 
 function getInvTotal() {
@@ -115,7 +116,16 @@ function getBTCLeft() {
 }
 
 async function updateBTCLeft() {
-  document.getElementById('btcLeft').innerText = (getBTCLeft() * 100 / 21000000).toFixed(2) + '%';
+  const obj = document.getElementById('btcLeft');
+  const btcLeft = getBTCLeft();
+  const prcntLeft = (btcLeft * 100 / 21000000);
+  if(prcntLeft > 0.01)
+    obj.innerText = prcntLeft.toFixed(2) + ' %';
+  else if(btcLeft > 100)
+    obj.innerText = btcLeft.toFixed(0) + ' ₿';
+  else
+    obj.innerText = btcLeft.toFixed(2) + ' ₿'
+
 }
 
 async function updateData() {
@@ -457,4 +467,22 @@ async function onOffline() {
 
 async function onOnline() {
   document.getElementById('offlineNotif').classList.add('hidden');
+}
+
+function countRGBColorFromGradient(begining, end, point) {
+  console.log(point)
+  const color = {
+    r: 0,
+    g: 0,
+    b: 0
+  }
+  for(atr in color) {
+    console.log(atr)
+    color[atr] = Math.round(((begining[atr] * (1-point)) + (end[atr] * point)));
+    color[atr] = color[atr].toString(16);
+    if(color[atr].length == 1)
+      color[atr] = '0' + color[atr];
+  }
+console.log('#' + color.r + color.g + color.b)
+  return '#' + color.r + color.g + color.b;
 }

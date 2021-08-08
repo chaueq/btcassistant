@@ -313,41 +313,6 @@ iframe.ad {
   bottom: 25vh;
 }
 
-@media (min-aspect-ratio: 3/2) {
-  div.box {
-    width: 25vw;
-  }
-
-  canvas.avgChart {
-    width: 25vw;
-  }
-
-  br.betweenBoxes {
-    display: none;
-  }
-
-  div.boxesContainer {
-    height: 20vh;
-  }
-
-  div.boxContent {
-    font-size: 8vh;
-  }
-
-  div.bigBox {
-    font-size: 12vh;
-  }
-
-  div.wide, canvas.wide {
-    width: 50vw;
-  }
-
-  div.investmentsContainer {
-    height: 60vh;
-  }
-
-}
-
 .disableSelect {
   -webkit-user-select: none;
   -moz-user-select: none;

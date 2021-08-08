@@ -8,7 +8,8 @@ const invs = getInvestments();
 for(var i = 0; i < invs.length; ++i) {
   appendInv(invs[i].date, invs[i].amount, invs[i].boughtFor);
 }
-appendInvTotal();
+if(invs.length != 1)
+  appendInvTotal();
 
 updateAll();
 const priceUpdater = setInterval(updateAll, 15000);

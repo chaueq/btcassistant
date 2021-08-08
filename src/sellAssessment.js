@@ -169,9 +169,10 @@ function computeSellAssessment() {
 function updateSellBuyScore() {
   const score = getAssessmentData().sellBuyScore;
   const holder = document.getElementById('sellBuyScore');
+  const neutral = {r: 0xd0, g: 0xd0, b:0xd0};
   const colors = {
-    negative: '#ff6060',
-    positive: '#60ff60'
+    negative: countRGBColorFromGradient(neutral, {r:0xff, g:0x60, b:0x60}, Math.abs(score)/100),
+    positive: countRGBColorFromGradient(neutral, {r:0x60, g:0xff, b:0x60}, Math.abs(score)/100)
   }
   writeValue(holder, score, false, ' %', true, '', colors);
 }
@@ -187,7 +188,7 @@ function computeSellBuyScore() {
     ...datas.prices.week.prices,
     ...datas.prices.month.prices,
     ...datas.prices.year.prices,
-    ...datas.prices.all.prices    
+    ...datas.prices.all.prices
   ];
   for(let i = 0; i < data.length; ++i) {
     data[i][0] = Number(data[i][0]);
