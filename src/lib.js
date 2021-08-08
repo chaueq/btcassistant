@@ -129,7 +129,7 @@ async function updateBTCLeft() {
 }
 
 async function updateData() {
-    let response = await fetch("https://www.coinbase.com/api/v2/assets/prices/5b71fc48-3dd3-540c-809b-f8c94d0e68b5?base=PLN");
+    let response = await fetch("https://www.coinbase.com/api/v2/assets/prices/5b71fc48-3dd3-540c-809b-f8c94d0e68b5?base=" + getSettings().currency);
     if (response.ok) {
       let data = await response.json();
       data = data.data
@@ -173,7 +173,8 @@ function getSettings() {
       buyFee: 2.5,
       sellFee: 2.5,
       hideSensitive: 0,
-      sellAssessmentFastidiousness: 0.5
+      sellAssessmentFastidiousness: 0.5,
+      currency: 'PLN'
     }
     setSettings(settings);
     return settings;

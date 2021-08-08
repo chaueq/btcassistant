@@ -279,12 +279,21 @@ input.settingVal[type="number"] {
   filter: invert();
 }
 
+select.settingVal {
+  width: 20%;
+  filter: invert();
+}
+
 span.settingValType {
   width: 10%;
   margin-left: 1vh;
   height: 2vh;
   line-height: 2vh;
   cursor: pointer;
+}
+
+hr.settingSeparator {
+  border-color: #202020;
 }
 
 div.ad {
