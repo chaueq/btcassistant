@@ -470,19 +470,16 @@ async function onOnline() {
 }
 
 function countRGBColorFromGradient(begining, end, point) {
-  console.log(point)
   const color = {
     r: 0,
     g: 0,
     b: 0
   }
   for(atr in color) {
-    console.log(atr)
     color[atr] = Math.round(((begining[atr] * (1-point)) + (end[atr] * point)));
     color[atr] = color[atr].toString(16);
     if(color[atr].length == 1)
       color[atr] = '0' + color[atr];
   }
-console.log('#' + color.r + color.g + color.b)
   return '#' + color.r + color.g + color.b;
 }

@@ -169,10 +169,17 @@ function computeSellAssessment() {
 function updateSellBuyScore() {
   const score = getAssessmentData().sellBuyScore;
   const holder = document.getElementById('sellBuyScore');
-  const neutral = {r: 0xd0, g: 0xd0, b:0xd0};
   const colors = {
-    negative: countRGBColorFromGradient(neutral, {r:0xff, g:0x60, b:0x60}, Math.abs(score)/100),
-    positive: countRGBColorFromGradient(neutral, {r:0x60, g:0xff, b:0x60}, Math.abs(score)/100)
+    negative: countRGBColorFromGradient(
+      {r:0xff, g:0xa0, b:0xa0},
+      {r:0xff, g:0x00, b:0x00},
+      Math.abs(score)/100
+    ),
+    positive: countRGBColorFromGradient(
+      {r:0xa0, g:0xff, b:0xa0},
+      {r:0x00, g:0xff, b:0x00},
+      Math.abs(score)/100
+    )
   }
   writeValue(holder, score, false, ' %', true, '', colors);
 }

@@ -311,6 +311,7 @@ iframe.ad {
   left: 25vw;
   right: 25vw;
   bottom: 25vh;
+  border: #ffac00 1px solid;
 }
 
 .disableSelect {
