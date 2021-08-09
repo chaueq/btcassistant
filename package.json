@@ -1,12 +1,20 @@
 {
   "name": "BTCassistant",
-  "version": "1.8.6",
+  "version": "1.9.0",
   "description": "Simple assistant for BTC traders",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-packager . BTCassistant --platform=win32 --arch=x64 --out dist/ --overwrite && electron-packager . BTCassistant --platform linux --arch x64 --out dist/ --overwrite && rm dist/installers/btcassistant_win64.zip && cd dist && zip -r installers/btcassistant_win64.zip BTCassistant-win32-x64/ && cd .. && electron-installer-debian --src dist/BTCassistant-linux-x64/ --dest dist/installers/ --arch amd64",
+    "build": "electron-packager . BTCassistant --prune=true --platform=win32 --arch=x64 --out dist/ --overwrite --icon=./icon.ico && electron-packager . BTCassistant --prune=true --platform linux --arch x64 --out dist/ --overwrite --icon=./icon.ico && rm dist/installers/btcassistant_win64.zip && cd dist && zip -r installers/btcassistant_win64.zip BTCassistant-win32-x64/ && cd .. && electron-installer-debian --icon=logo.png --src dist/BTCassistant-linux-x64/ --dest dist/installers/ --arch amd64",
     "install": "sudo dpkg -i $(ls dist/installers/*.deb | grep \"$(ls dist/installers/*.deb | cut -d'_' -f2 | sort --field-separator='.' -k2 -k3 -k4 -g -r | head -n1)\")"
+  },
+  "build": {
+    "win": {
+      "icon": "build/icon.png"
+    },
+    "linux": {
+      "icon": "build/icons/256x256.png"
+    }
   },
   "author": "chaueq",
   "license": "Specified in LICENSE.md",
