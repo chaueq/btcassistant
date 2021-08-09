@@ -484,3 +484,12 @@ function countRGBColorFromGradient(begining, end, point) {
   }
   return '#' + color.r + color.g + color.b;
 }
+
+function getVersion() {
+  for(part of navigator.appVersion.split(' ')) {
+    const subparts = part.split('/');
+    if(subparts[0] == 'BTCassistant') {
+      return subparts[1];
+    }
+  }
+}
