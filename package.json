@@ -1,6 +1,6 @@
 {
   "name": "BTCassistant",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "Simple assistant for BTC traders",
   "main": "src/main.js",
   "scripts": {
