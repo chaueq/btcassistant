@@ -6,6 +6,7 @@ body {
   text-align: center;
   overflow-x: hidden;
   overflow-y: hidden;
+  filter: brightness(0);
 }
 
 div.box {
