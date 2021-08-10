@@ -4,23 +4,8 @@ function setAssessmentData(assessmentData) {
 }
 
 function getAssessmentData() {
-  try {
-    const string = window.localStorage.getItem('assessmentData');
-    if(string == null)
-      throw null;
-    return JSON.parse(string);
-  }
-  catch(e) {
-    const assessmentData = {
-      refreshPeriod: 0,
-      lastComputed: 0,
-      maxTime: 0,
-      threshold: Infinity,
-      sellBuyScore: 0
-    }
-    setAssessmentData(assessmentData);
-    return assessmentData;
-  }
+  const string = window.localStorage.getItem('assessmentData');
+  return JSON.parse(string);
 }
 
 function assessSell(incomePrcnt) {

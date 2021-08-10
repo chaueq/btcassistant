@@ -159,38 +159,13 @@ function setSettings(settings) {
 }
 
 function getSettings() {
-  try {
-    const string = window.localStorage.getItem('settings');
-    if(string == null)
-      throw null;
-    return JSON.parse(string);
-  }
-  catch(e) {
-    const settings = {
-      brightness: 1,
-      chartsOpacity: 0.05,
-      incomeTax: 19,
-      buyFee: 2.5,
-      sellFee: 2.5,
-      hideSensitive: 0,
-      sellAssessmentFastidiousness: 0.5,
-      currency: 'PLN'
-    }
-    setSettings(settings);
-    return settings;
-  }
+  const string = window.localStorage.getItem('settings');
+  return JSON.parse(string);
 }
 
 function getAdLastShown() {
-  try {
-    const string = window.localStorage.getItem('aads');
-    if(string == null)
-      throw null;
-    return Number(string);
-  }
-  catch(e) {
-    return 0;
-  }
+  const string = window.localStorage.getItem('aads');
+  return Number(string);
 }
 
 function showAd() {
@@ -332,17 +307,9 @@ async function updateAll() {
 }
 
 function getInvestments() {
-  try {
-    let retrived = window.localStorage.getItem('investments');
-    retrived = JSON.parse(retrived);
-    if(retrived == null)
-      return [];
-    else
-      return retrived;
-  }
-  catch (e) {
-    return [];
-  }
+  let retrived = window.localStorage.getItem('investments');
+  retrived = JSON.parse(retrived);
+  return retrived;
 }
 
 function saveInvestments(invs) {
