@@ -5,7 +5,7 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-packager . BTCassistant --prune=true --platform=win32 --arch=x64 --out dist/ --overwrite --icon=./icon.ico && electron-packager . BTCassistant --prune=true --platform linux --arch x64 --out dist/ --overwrite --icon=./icon.ico && rm dist/installers/btcassistant_win64.zip && cd dist && zip -r installers/btcassistant_win64.zip BTCassistant-win32-x64/ && cd .. && electron-installer-debian --icon=logo.png --src dist/BTCassistant-linux-x64/ --dest dist/installers/ --arch amd64",
+    "build": "electron-packager . BTCassistant --prune=true --platform=win32 --arch=x64 --out dist/ --overwrite --icon=./icon.ico && electron-packager . BTCassistant --prune=true --platform linux --arch x64 --out dist/ --overwrite --icon=./icon.ico && cd dist && zip -r installers/btcassistant_$(cat ../version)_win64.zip BTCassistant-win32-x64/ && cd .. && electron-installer-debian --icon=logo.png --src dist/BTCassistant-linux-x64/ --dest dist/installers/ --arch amd64",
     "install": "sudo dpkg -i $(ls dist/installers/*.deb | grep \"$(ls dist/installers/*.deb | cut -d'_' -f2 | sort --field-separator='.' -k2 -k3 -k4 -g -r | head -n1)\")"
   },
   "author": "chaueq",
