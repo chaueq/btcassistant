@@ -22,6 +22,31 @@ for(setting in defaults) {
   }
 }
 
-setTimeout(() => {
-  window.location.href = 'index.html';
-}, 3000);
+async function checkAppUpdate() {
+  const latestURL = 'https://github.com/chaueq/btcassistant/releases/latest';
+  let response = await fetch(latestURL);
+  if(response.ok) {
+    let version = response.url.split('/')[7];
+    version = version.substr(1, version.length - 1);
+
+    if(cmpVersions(version, getVersion())) {
+      document.getElementById('remindLaterBtn').addEventListener('click', () => {
+        window.location.href = 'index.html';
+      });
+      document.getElementById('updateNowBtn').addEventListener('click', () => {
+        window.location.href = latestURL;
+      });
+      document.getElementById('updateNotif').classList.remove('hidden');
+    }
+  }
+}
+
+Promise.all([
+  sleep(3000),
+  checkAppUpdate()
+]).then(() => {
+  if(document.getElementById('updateNotif').classList.contains('hidden')) {
+      window.location.href = 'index.html';
+    console.log('view would be changed now')
+  }
+})

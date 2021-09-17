@@ -460,3 +460,20 @@ function getVersion() {
     }
   }
 }
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function cmpVersions(a, b) {
+  a = a.split('.');
+  b = b.split('.');
+
+  for(let i = 0; i < Math.min(a.length, b.length); ++i) {
+    if(a[i] != b[i]) {
+      return a[i] > b[i];
+    }
+  }
+
+  return false;
+}

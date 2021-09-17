@@ -368,3 +368,23 @@ div.license {
   max-height: 50vh;
   overflow-y: auto;
 }
+
+div.updateNotif {
+  margin-top: 10vh;
+  color: #b56606;
+}
+
+div.updateNotifBtn {
+  color: #a0a0a0;
+  width: 20%;
+  border: #505050 solid 1px;
+  display: inline-block;
+  transition: all ease-in 0.1s;
+  cursor: pointer;
+  user-select: none;
+}
+
+div.updateNotifBtn:hover {
+  border-color: #b56606;
+  color: #b56606;
+}
