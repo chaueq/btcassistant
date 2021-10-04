@@ -1,4 +1,4 @@
-if(cmpVersions("2.1.0", window.localStorage.getItem('versionLastSeen'))) {
+if(cmpVersions("2.1.0", JSON.parse(window.localStorage.getItem('versionLastSeen')))) {
   //prepare data object for multi-crypto format
   window.localStorage.setItem('data', JSON.stringify(defaults.data));
 
