@@ -1,21 +1,38 @@
-function setAssessmentData(assessmentData) {
-  assessmentData = JSON.stringify(assessmentData);
+function setAssessmentData(assessmentData, crypto) {
+  const all = JSON.parse(window.localStorage.getItem('assessmentData'));
+  all[crypto] = assessmentData;
+  assessmentData = JSON.stringify(all);
   window.localStorage.setItem('assessmentData', assessmentData);
 }
 
-function getAssessmentData() {
-  const string = window.localStorage.getItem('assessmentData');
-  return JSON.parse(string);
+function getAssessmentData(crypto) {
+  if(crypto == undefined) {
+    crypto = getActiveCrypto();
+  }
+  const all = JSON.parse(window.localStorage.getItem('assessmentData'));
+  if(all[crypto] == null || all[crypto] == undefined) {
+    return all.default;
+  }
+  return all[crypto];
 }
 
-function assessSell(incomePrcnt) {
-  const assessmentData = getAssessmentData();
+function assessSell(incomePrcnt, crypto) {
+  const assessmentData = getAssessmentData(crypto);
   return incomePrcnt > assessmentData.threshold;
 }
 
-function updateSellAssessment() {
-  const assessmentData = getAssessmentData();
-  const data = getData();
+async function updateAllSellAssessment() {
+  const cryptos = getSettings().activeCrypto;
+  const promises = [];
+  for(const crypto of cryptos) {
+    promises.push(updateSellAssessment(crypto));
+  }
+  await Promise.all(promises);
+}
+
+async function updateSellAssessment(crypto) {
+  const assessmentData = getAssessmentData(crypto);
+  const data = getData(crypto);
   const time = Math.floor(Date.now()/1000);
   const sinceComputed = time - assessmentData.lastComputed;
   const prices = [
@@ -41,25 +58,34 @@ function updateSellAssessment() {
   assessmentData.maxTime = prices[max][1];
 
   if(assessmentData.maxTime != prices[max][1] || sinceComputed > assessmentData.refreshPeriod) {
-    setAssessmentData(assessmentData);
-    computeSellAssessment();
+    setAssessmentData(assessmentData, crypto);
+    computeSellAssessment(crypto);
   }
 
-  computeSellBuyScore();
+  computeSellBuyScore(crypto);
 }
 
-function computeSellAssessment() {
-  const assessmentData = getAssessmentData();
+async function computeAllSellAssessment() {
+  const cryptos = getSettings().activeCrypto;
+  const promises = [];
+  for(const crypto of cryptos) {
+    computeSellAssessment(crypto);
+  }
+  await Promise.all(promises);
+}
+
+async function computeSellAssessment(crypto) {
+  const assessmentData = getAssessmentData(crypto);
   const sellAssessmentFastidiousness = getSettings().sellAssessmentFastidiousness;
   assessmentData.lastComputed = Math.floor(Date.now()/1000);
   const sinceMax = assessmentData.lastComputed - assessmentData.maxTime;
   const data =
-    (sinceMax < 3600) ? getData().prices.hour.prices.reverse() :
-    (sinceMax < 86400) ? getData().prices.day.prices.reverse() :
-    (sinceMax < 604800) ? getData().prices.week.prices.reverse() :
-    (sinceMax < 2592000) ? getData().prices.month.prices.reverse() :
-    (sinceMax < 31536000) ? getData().prices.year.prices.reverse() :
-    [...getData().prices.all.prices.reverse(), ...getData().prices.year.prices.reverse()];
+    (sinceMax < 3600) ? getData(crypto).prices.hour.prices.reverse() :
+    (sinceMax < 86400) ? getData(crypto).prices.day.prices.reverse() :
+    (sinceMax < 604800) ? getData(crypto).prices.week.prices.reverse() :
+    (sinceMax < 2592000) ? getData(crypto).prices.month.prices.reverse() :
+    (sinceMax < 31536000) ? getData(crypto).prices.year.prices.reverse() :
+    [...getData(crypto).prices.all.prices.reverse(), ...getData(crypto).prices.year.prices.reverse()];
 
   for(let i = 0; i < data.length; ++i) {
     data[i][0] = Number(data[i][0]);
@@ -132,7 +158,7 @@ function computeSellAssessment() {
 
   if(incomes.length == 0) {
     assessmentData.threshold = Infinity;
-    setAssessmentData(assessmentData);
+    setAssessmentData(assessmentData, crypto);
     return;
   }
 
@@ -148,11 +174,11 @@ function computeSellAssessment() {
   incomesDev /= incomes.length;
   incomesDev = Math.sqrt(incomesDev);
   assessmentData.threshold = incomesAvg + incomesDev;
-  setAssessmentData(assessmentData);
+  setAssessmentData(assessmentData, crypto);
 }
 
 function updateSellBuyScore() {
-  const score = getAssessmentData().sellBuyScore;
+  const score = getAssessmentData(getActiveCrypto()).sellBuyScore;
   const holder = document.getElementById('sellBuyScore');
   const colors = {
     negative: countRGBColorFromGradient(
@@ -169,11 +195,11 @@ function updateSellBuyScore() {
   writeValue(holder, score, false, ' %', true, '', colors);
 }
 
-function computeSellBuyScore() {
-  const assessmentData = getAssessmentData();
-  const current = getCurrentPrice();
+function computeSellBuyScore(crypto) {
+  const assessmentData = getAssessmentData(crypto);
+  const current = getCurrentPrice(crypto);
   const sinceMax = Math.floor(Date.now()/1000) - assessmentData.maxTime;
-  const datas = getData();
+  const datas = getData(crypto);
   const data = [
     ...datas.prices.hour.prices,
     ...datas.prices.day.prices,
@@ -216,5 +242,5 @@ function computeSellBuyScore() {
 
   const score = ((beaten / (data.length/2)) - 1) * 100;
   assessmentData.sellBuyScore = score;
-  setAssessmentData(assessmentData);
+  setAssessmentData(assessmentData, crypto);
 }

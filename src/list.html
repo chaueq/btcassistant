@@ -36,6 +36,12 @@
         Bought for
       </div>
       <div class="invValue invListValue">
+        Currency
+      </div>
+      <div class="invValue invListValue">
+        Crypto
+      </div>
+      <div class="invValue invListValue">
         Actions
       </div>
     </div>
@@ -52,6 +58,23 @@
     <span class="popupElement">Bought For</span>
     <br>
     <input class="popupElement" min="0.01" type="number" id="boughtFor" value="0.00" step="0.01">
+    <span class="popupElement">Currency</span>
+    <br>
+    <select class="popupElement" id="currency">
+      <option value="PLN">Polish Złoty</option>
+      <option value="EUR">Euro</option>
+      <option value="USD">American Dollar</option>
+    </select>
+    <span class="popupElement">Crypto</span>
+    <br>
+    <select class="popupElement" id="crypto">
+      <option value="BTC">Bitcoin</option>
+      <option value="ETH">Ethereum</option>
+      <option value="XRP">Ripple</option>
+      <option value="DOGE">Dogecoin</option>
+      <option value="ADA">Cardano</option>
+    </select>
+
     <div id="cancelButton" class="popupButton">
       Cancel
     </div>

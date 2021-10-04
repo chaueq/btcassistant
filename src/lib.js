@@ -1,5 +1,5 @@
-function getCurrentPrice() {
-  return getData().prices.latest;
+function getCurrentPrice(crypto) {
+  return getData(crypto).prices.latest;
 }
 
 function writeValue(obj, value, strong, suffix='', neutral=false, symbol='', colorsOverwrite=[]) {
@@ -81,7 +81,7 @@ function getInvTotal() {
       amount: 0,
       boughtFor: 0
     }
-    const invs = getInvestments();
+    const invs = getInvestments(getSettings().currency, getActiveCrypto());
     for(let i = 0; i < invs.length; ++i) {
       totalInv.amount += invs[i].amount;
       totalInv.boughtFor += invs[i].boughtFor;
@@ -128,33 +128,79 @@ async function updateBTCLeft() {
 
 }
 
-async function updateData() {
-    let response = await fetch("https://www.coinbase.com/api/v2/assets/prices/5b71fc48-3dd3-540c-809b-f8c94d0e68b5?base=" + getSettings().currency);
+function getActiveCrypto() {
+  return JSON.parse(window.localStorage.getItem('activeCrypto'));
+}
+
+function changeActiveCrypto() {
+  const current = getActiveCrypto();
+  const activeCryptos = getSettings().activeCrypto;
+  window.localStorage.setItem('activeCrypto', JSON.stringify(activeCryptos[(activeCryptos.indexOf(current)+1) % activeCryptos.length]));
+  clearInvs();
+  spawnInvs();
+  updateAllVisuals();
+}
+
+async function updateData(crypto) {
+    let currency;
+    switch (crypto) {
+      case "BTC":
+        currency = "5b71fc48-3dd3-540c-809b-f8c94d0e68b5"
+        break;
+      case "ETH":
+        currency = "ethereum-classic"
+        break;
+      case "XRP":
+        currency = "e17a44c8-6ea1-564f-a02c-2a9ca1d8eec4";
+        break;
+      case "DOGE":
+        currency = "d9a3edfa-1be7-589c-bd20-c034f3830b60";
+        break;
+      case "ADA":
+        currency = "63062039-7afb-56ff-8e19-5e3215dc404a";
+        break;
+    }
+    let response = await fetch("https://www.coinbase.com/api/v2/assets/prices/" + currency + "?base=" + getSettings().currency);
     if (response.ok) {
       let data = await response.json();
-      data = data.data
+      data = data.data;
       data.timestamp = Math.floor(Date.now()/1000);
-      data = JSON.stringify(data);
-      window.localStorage.setItem('data', data);
+      const all = JSON.parse(window.localStorage.getItem('data'));
+      all[crypto] = data;
+      window.localStorage.setItem('data', JSON.stringify(all));
     }
     else {
       onOffline();
     }
 }
 
-function getData() {
-  return JSON.parse(window.localStorage.getItem('data'));
+async function updateAllData() {
+  const cryptos = getSettings().activeCrypto;
+  const promises = [];
+  for(const crypto of cryptos) {
+    promises.push(updateData(crypto));
+  }
+  return Promise.all(promises);
 }
 
-function setSettings(settings) {
+function getData(crypto) {
+  if(crypto == null || crypto == undefined)
+    crypto = getActiveCrypto();
+  return JSON.parse(window.localStorage.getItem('data'))[crypto];
+}
+
+async function setSettings(settings) {
   const old = getSettings();
   const sellAssessmentFastidiousnessChanged = (old.sellAssessmentFastidiousness != settings.sellAssessmentFastidiousness);
-
+  const currencyChanged = (old.currency != settings.currency);
   settings = JSON.stringify(settings);
   window.localStorage.setItem('settings', settings);
 
-  if(sellAssessmentFastidiousnessChanged) {
-    computeSellAssessment();
+  if(currencyChanged) {
+    await updateAllData();
+  }
+  if(sellAssessmentFastidiousnessChanged || currencyChanged) {
+    await computeAllSellAssessment();
   }
 }
 
@@ -204,7 +250,7 @@ async function updateHourlyChart() {
 }
 
 async function updateInv(invId) {
-  const invs = getInvestments();
+  const invs = getInvestments(getSettings().currency, getActiveCrypto());
   const inv = invId <= invs.length ? invs[invId-1] : getInvTotal();
   const fields = document.getElementsByClassName('invRecord')[invId].getElementsByClassName('invValue');
   const value = getCurrentPrice() * inv.amount;
@@ -223,6 +269,22 @@ async function updateInv(invId) {
   writeValue(fields[7], incPrcnt, strong, ' %');
 }
 
+function clearInvs() {
+  const invs = document.querySelectorAll('#invContainer>div.invRecord');
+  for(let i = 1; i < invs.length; ++i) {
+    invs[i].parentNode.removeChild(invs[i]);
+  }
+}
+
+function spawnInvs() {
+  const invs = getInvestments(settings.currency, getActiveCrypto());
+  for(var i = 0; i < invs.length; ++i) {
+    appendInv(invs[i].date, invs[i].amount, invs[i].boughtFor);
+  }
+  if(invs.length != 1)
+    appendInvTotal();
+}
+
 async function updateAllInv() {
   const invs = document.getElementsByClassName('invRecord');
   for(let i = 1; i < invs.length; ++i) {
@@ -238,8 +300,6 @@ async function updateCurrentPrice() {
   const buy = raw * (1 + (settings.buyFee/100));
 
   document.getElementById('currentPrice').textContent = raw.toFixed(2);
-  document.getElementById('currentSellPrice').textContent = sell.toFixed(2);
-  document.getElementById('currentBuyPrice').textContent = buy.toFixed(2);
 }
 
 async function updateAvarage(name, timespan) {
@@ -279,21 +339,7 @@ async function updateAvarage(name, timespan) {
   drawChart(document.getElementById(name + 'Chart'), data);
 }
 
-async function updateAll() {
-  try {
-    await Promise.all([
-      updateData(),
-      updateDataBTCLeft()
-    ]);
-    onOnline();
-    updateSellAssessment();
-  }
-  catch(e) {
-    if(e == 'TypeError: Failed to fetch') {
-      onOffline();
-    }
-  }
-  finally {
+function updateAllVisuals() {
     updateCurrentPrice();
     updateBTCLeft();
     updateSellBuyScore();
@@ -303,24 +349,55 @@ async function updateAll() {
     updateAvarage('yearly', 'year', 365);
     updateHourlyChart();
     updateAllInv();
+    document.getElementById('crypto').innerText = getActiveCrypto();
+}
+
+async function updateAll() {
+  try {
+    await Promise.all([
+      updateAllData(),
+      updateDataBTCLeft()
+    ]);
+    onOnline();
+    await updateAllSellAssessment();
+  }
+  catch(e) {
+    if(e == 'TypeError: Failed to fetch') {
+      onOffline();
+    }
+    else {
+      console.error(e);
+    }
+  }
+  finally {
+    updateAllVisuals();
   }
 }
 
-function getInvestments() {
+function getInvestments(currency, crypto) {
   let retrived = window.localStorage.getItem('investments');
   retrived = JSON.parse(retrived);
-  return retrived;
+  const filtered = retrived.filter(((currency, crypto, inv) => {
+    return (
+      (inv.currency == currency || currency == null)
+      &&
+      (inv.crypto == crypto || crypto == null)
+    );
+  }).bind(null, currency, crypto));
+  return filtered;
 }
 
 function saveInvestments(invs) {
   window.localStorage.setItem('investments',  JSON.stringify(invs));
 }
 
-function addInv(date, amount, boughtFor) {
+function addInv(date, amount, boughtFor, currency, crypto) {
   let inv = Object();
   inv.date = date;
   inv.amount = Number(amount)
   inv.boughtFor = Number(boughtFor);
+  inv.currency = currency;
+  inv.crypto = crypto;
 
   const invs = getInvestments();
   invs.push(inv);
@@ -360,6 +437,8 @@ function appendListElement(inv, id) {
   appendListField(row, inv.date);
   appendListField(row, inv.amount.toFixed(8));
   appendListField(row, inv.boughtFor.toFixed(2));
+  appendListField(row, inv.currency);
+  appendListField(row, inv.crypto);
   appendDeleteButton(row, id);
 
   return document.getElementById('invContainer').appendChild(row);

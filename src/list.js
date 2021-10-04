@@ -9,10 +9,14 @@ document.getElementById('addButton').addEventListener('click', () => {
   addInv(
     document.getElementById('date').value,
     document.getElementById('amount').value,
-    document.getElementById('boughtFor').value
+    document.getElementById('boughtFor').value,
+    document.getElementById('currency').value,
+    document.getElementById('crypto').value
   );
   window.location.reload(false);
 });
+
+document.getElementById('date').value = new Date().toISOString().split('T')[0];
 
 const invs = getInvestments();
 for(var i = 0; i < invs.length; ++i) {

@@ -4,15 +4,22 @@ for(const chart of document.getElementsByTagName("canvas")) {
   chart.style.opacity = settings.chartsOpacity;
 }
 
-const invs = getInvestments();
-for(var i = 0; i < invs.length; ++i) {
-  appendInv(invs[i].date, invs[i].amount, invs[i].boughtFor);
-}
-if(invs.length != 1)
-  appendInvTotal();
+document.getElementById('currency').innerText = settings.currency;
+document.getElementById('crypto').addEventListener('click', () => {
+  changeActiveCrypto();
+  if(settings.switchInterval > 0) {
+    window.location.reload();
+  }
+});
+spawnInvs();
+updateAllVisuals();
 
 updateAll();
 const priceUpdater = setInterval(updateAll, 15000);
 
 showAd();
 const adShower = setInterval(showAd, 3600000);
+
+if(settings.switchInterval > 0) {
+  const cryptoSwitcher = setInterval(changeActiveCrypto, settings.switchInterval*1000);
+}

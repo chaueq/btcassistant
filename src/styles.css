@@ -9,6 +9,10 @@ body {
   filter: brightness(0);
 }
 
+div.settingsBox {
+  overflow-y: auto;
+}
+
 div.box {
   height: 20vh;
   width: 50vw;
@@ -146,7 +150,7 @@ div.invValue {
 
 div.invListValue {
   display: inline-block;
-  width: calc(25vw - 1px);
+  width: calc(100vw/6 - 1px);
   text-align: center;
   height: 100%;
   margin: 0;
@@ -210,8 +214,8 @@ div.popup {
   width: 90%;
 }
 
-input.popupElement {
-  margin-bottom: 5vh;
+input.popupElement, select.popupElement {
+  margin-bottom: 3vh;
 }
 
 div.hidden {
@@ -387,4 +391,10 @@ div.updateNotifBtn {
 div.updateNotifBtn:hover {
   border-color: #b56606;
   color: #b56606;
+}
+
+div.settingChecklist {
+  font-size: 0.9em;
+  filter: invert();
+  color: #2f2f2f;
 }

@@ -20,7 +20,7 @@
     Settings
   </div>
 
-  <div class="pageBody">
+  <div class="pageBody settingsBox">
     <hr class="settingSeparator" />
     <div class="setting">
       <div class="settingLabel">
@@ -56,6 +56,13 @@
     <hr class="settingSeparator" />
     <div class="setting">
       <div class="settingLabel">
+        Crypto Auto-Switch Interval
+      </div>
+      <input type="number" name="switchInterval" class="settingVal" value="60" min="0" max="86400" step="1" /><span class="settingValType">s</span>
+    </div>
+    <hr class="settingSeparator" />
+    <div class="setting">
+      <div class="settingLabel">
         Income Tax
       </div>
       <input type="number" name="incomeTax" class="settingVal" value="19" min="0" max="100" step="1" /><span class="settingValType">%</span>
@@ -80,6 +87,29 @@
         Sell Assessment Fastidiousness
       </div>
       <input type="range" name="sellAssessmentFastidiousness" class="settingVal" value="0.5" min="0" max="1" step="0.05" />
+    </div>
+    <hr class="settingSeparator" />
+    <div class="setting">
+      <div class="settingLabel">
+        Tracked Cryptocurrencies
+      </div>
+      <input class="settingVal" type="hidden" name="activeCrypto">
+      <div id="cryptos" class="settingChecklist">
+        <input type="checkbox" id="ac_BTC">
+        <label for="ac_BTC">Bitcoin</label>
+        <br>
+        <input type="checkbox" id="ac_ETH">
+        <label for="ac_ETH">Ethereum</label>
+        <br>
+        <input type="checkbox" id="ac_XRP">
+        <label for="ac_XRP">Ripple</label>
+        <br>
+        <input type="checkbox" id="ac_DOGE">
+        <label for="ac_DOGE">Dogecoin</label>
+        <br>
+        <input type="checkbox" id="ac_ADA">
+        <label for="ac_ADA">Cardano</label>
+      </div>
     </div>
     <hr class="settingSeparator" />
   </div>

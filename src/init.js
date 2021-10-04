@@ -47,6 +47,5 @@ Promise.all([
 ]).then(() => {
   if(document.getElementById('updateNotif').classList.contains('hidden')) {
       window.location.href = 'index.html';
-    console.log('view would be changed now')
   }
 })
