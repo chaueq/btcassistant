@@ -319,8 +319,6 @@ async function updateCurrentPrice() {
   const data = getData();
   const settings = getSettings();
   const raw = Number(data.prices.latest);
-  const sell = raw * (1 - (settings.sellFee/100));
-  const buy = raw * (1 + (settings.buyFee/100));
 
   document.getElementById('currentPrice').textContent = raw.toFixed(2);
 }
@@ -355,7 +353,7 @@ async function updateAvarage(name, timespan) {
   norm /= norm_count;
   cmp = getCurrentPrice() - norm;
   strong = (Math.abs(cmp) > dev);
-  prcnt = 100 * cmp / avg;
+  prcnt = 100 * cmp / norm;
   writeValue(document.getElementById(name + 'Cmp'), cmp, strong);
   writeValue(document.getElementById(name + 'Norm'), norm, strong, '', true, (cmp > 0) ? '+' : ((cmp == 0) ? '=' : '-'));
   writeValue(document.getElementById(name + 'Prcnt'), prcnt, strong, ' %');
