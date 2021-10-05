@@ -3,6 +3,9 @@ for(const atr in settings) {
   const obj = document.getElementsByName(atr)[0];
   obj.value = settings[atr];
   obj.title = settings[atr];
+  obj.addEventListener('change', (event) => {
+    event.target.title = event.target.value;
+  })
 }
 document.body.style.filter += ' brightness(' + settings.brightness.toFixed(2) + ')';
 
@@ -31,3 +34,10 @@ for(const item of document.querySelectorAll('#cryptos>input[type=checkbox]')) {
     setSettings(settings);
   });
 }
+
+document.getElementsByName('brightness')[0].addEventListener('change', (event) => {
+  document.body.style.filter = document.body.style.filter.replace(
+    /brightness\([01](\.\d\d?)?\)/,
+    'brightness(' + Number(event.target.value).toFixed(2) + ')'
+  );
+});
