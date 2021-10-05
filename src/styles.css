@@ -398,3 +398,17 @@ div.settingChecklist {
   filter: invert();
   color: #2f2f2f;
 }
+
+div.notif {
+  position: absolute;
+  background-color: #606060f0;
+  color: #202020;
+  width: 40vw;
+  height: 10vh;
+  left: 30vw;
+  top: 35vh;
+  line-height: 10vh;
+  font-size: 3vh;
+  font-weight: bold;
+  transition: all ease-in 0.1s;
+}

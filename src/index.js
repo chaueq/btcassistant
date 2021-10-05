@@ -5,11 +5,9 @@ for(const chart of document.getElementsByTagName("canvas")) {
 }
 
 document.getElementById('currency').innerText = settings.currency;
-document.getElementById('crypto').addEventListener('click', () => {
-  changeActiveCrypto();
-  if(settings.switchInterval > 0) {
-    window.location.reload();
-  }
+document.getElementById('crypto').addEventListener('click', changeActiveCrypto);
+document.getElementById('crypto').addEventListener('contextmenu', () => {
+  changeActiveCrypto(false);
 });
 spawnInvs();
 updateAllVisuals();
@@ -21,5 +19,18 @@ showAd();
 const adShower = setInterval(showAd, 3600000);
 
 if(settings.switchInterval > 0) {
-  const cryptoSwitcher = setInterval(changeActiveCrypto, settings.switchInterval*1000);
+  const ac = getActiveCrypto();
+  ac.lastChanged = Math.floor(Date.now() / 1000);
+  setActiveCrypto(ac);
+  const cryptoSwitcher = setInterval(watchActiveCrypto, 250);
 }
+
+document.addEventListener('keyup', (e) => {
+  if (e.code === "Space") {
+    const ac = getActiveCrypto();
+    ac.paused = !ac.paused;
+    const text = "Crypto auto-switch " + ((ac.paused) ? 'paused' : 'resumed');
+    setActiveCrypto(ac);
+    spawnNotif(text, 3);
+  }
+});

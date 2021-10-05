@@ -81,7 +81,7 @@ function getInvTotal() {
       amount: 0,
       boughtFor: 0
     }
-    const invs = getInvestments(getSettings().currency, getActiveCrypto());
+    const invs = getInvestments(getSettings().currency, getActiveCrypto().name);
     for(let i = 0; i < invs.length; ++i) {
       totalInv.amount += invs[i].amount;
       totalInv.boughtFor += invs[i].boughtFor;
@@ -115,6 +115,10 @@ function getBTCLeft() {
   }
 }
 
+function getVersionLastSeen() {
+  return JSON.parse(window.localStorage.getItem('versionLastSeen'));
+}
+
 async function updateBTCLeft() {
   const obj = document.getElementById('btcLeft');
   const btcLeft = getBTCLeft();
@@ -132,10 +136,29 @@ function getActiveCrypto() {
   return JSON.parse(window.localStorage.getItem('activeCrypto'));
 }
 
-function changeActiveCrypto() {
-  const current = getActiveCrypto();
+function setActiveCrypto(activeCrypto) {
+  window.localStorage.setItem('activeCrypto', JSON.stringify(activeCrypto));
+}
+
+function watchActiveCrypto() {
+  const ac = getActiveCrypto();
+  if(ac.paused) {
+    return;
+  }
+  const timePassed = Math.floor(Date.now()/1000) - ac.lastChanged;
+  if(timePassed >= getSettings().switchInterval) {
+    changeActiveCrypto();
+  }
+}
+
+function changeActiveCrypto(moveForward=true) {
+  const ac = getActiveCrypto();
   const activeCryptos = getSettings().activeCrypto;
-  window.localStorage.setItem('activeCrypto', JSON.stringify(activeCryptos[(activeCryptos.indexOf(current)+1) % activeCryptos.length]));
+  const step = moveForward ? 1 : -1;
+  const index = (activeCryptos.indexOf(ac.name) + step + activeCryptos.length) % activeCryptos.length;
+  ac.name = activeCryptos[index];
+  ac.lastChanged = Math.floor(Date.now()/1000);
+  setActiveCrypto(ac);
   clearInvs();
   spawnInvs();
   updateAllVisuals();
@@ -185,7 +208,7 @@ async function updateAllData() {
 
 function getData(crypto) {
   if(crypto == null || crypto == undefined)
-    crypto = getActiveCrypto();
+    crypto = getActiveCrypto().name;
   return JSON.parse(window.localStorage.getItem('data'))[crypto];
 }
 
@@ -250,7 +273,7 @@ async function updateHourlyChart() {
 }
 
 async function updateInv(invId) {
-  const invs = getInvestments(getSettings().currency, getActiveCrypto());
+  const invs = getInvestments(getSettings().currency, getActiveCrypto().name);
   const inv = invId <= invs.length ? invs[invId-1] : getInvTotal();
   const fields = document.getElementsByClassName('invRecord')[invId].getElementsByClassName('invValue');
   const value = getCurrentPrice() * inv.amount;
@@ -277,7 +300,7 @@ function clearInvs() {
 }
 
 function spawnInvs() {
-  const invs = getInvestments(settings.currency, getActiveCrypto());
+  const invs = getInvestments(settings.currency, getActiveCrypto().name);
   for(var i = 0; i < invs.length; ++i) {
     appendInv(invs[i].date, invs[i].amount, invs[i].boughtFor);
   }
@@ -349,7 +372,7 @@ function updateAllVisuals() {
     updateAvarage('yearly', 'year', 365);
     updateHourlyChart();
     updateAllInv();
-    document.getElementById('crypto').innerText = getActiveCrypto();
+    document.getElementById('crypto').innerText = getActiveCrypto().name;
 }
 
 async function updateAll() {
@@ -555,4 +578,13 @@ function cmpVersions(a, b) {
   }
 
   return false;
+}
+
+async function spawnNotif(text, displayTime) {
+  const notif = document.createElement('div');
+  notif.classList.add('notif');
+  notif.innerText = text;
+  setTimeout((object) => {
+    document.body.removeChild(object);
+  }, displayTime*1000, document.body.appendChild(notif));
 }

@@ -7,7 +7,7 @@ function setAssessmentData(assessmentData, crypto) {
 
 function getAssessmentData(crypto) {
   if(crypto == undefined) {
-    crypto = getActiveCrypto();
+    crypto = getActiveCrypto().name;
   }
   const all = JSON.parse(window.localStorage.getItem('assessmentData'));
   if(all[crypto] == null || all[crypto] == undefined) {
@@ -178,7 +178,7 @@ async function computeSellAssessment(crypto) {
 }
 
 function updateSellBuyScore() {
-  const score = getAssessmentData(getActiveCrypto()).sellBuyScore;
+  const score = getAssessmentData(getActiveCrypto().name).sellBuyScore;
   const holder = document.getElementById('sellBuyScore');
   const colors = {
     negative: countRGBColorFromGradient(

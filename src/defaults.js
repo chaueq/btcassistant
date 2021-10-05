@@ -24,6 +24,10 @@ const defaults = {
   },
   data: {},
   btcLeft: 21000000,
-  activeCrypto: 'BTC',
+  activeCrypto: {
+    name: 'BTC',
+    lastChanged: 0,
+    paused: false
+  },
   versionLastSeen: "0.0.0"
 }
