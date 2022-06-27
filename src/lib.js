@@ -429,6 +429,11 @@ function displayInvForm() {
   document.getElementById('invForm').classList.remove('hidden');
 }
 
+function displayInvEdit() {
+  document.getElementById('editInv').classList.remove('hidden');
+}
+
+
 function appendListField(object, value) {
   const field = document.createElement('div');
   field.classList.add('invListValue');

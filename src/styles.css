@@ -412,3 +412,14 @@ div.notif {
   font-weight: bold;
   transition: all ease-in 0.1s;
 }
+
+textarea {
+  width: 18vw;
+  max-width: 18vw;
+  min-width: 18vw;
+  height: 25vh;
+  max-height: 25vh;
+  min-height: 25vh;
+  background-color: #101010;
+  color: #b56606;
+}
