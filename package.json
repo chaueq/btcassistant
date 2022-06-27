@@ -1,6 +1,6 @@
 {
   "name": "BTCassistant",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Simple assistant for BTC traders",
   "main": "src/main.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "author": "chaueq",
   "license": "Specified in LICENSE.md",
   "devDependencies": {
-    "electron": "^15.5.5",
+    "electron": "^19.0.6",
     "electron-installer-snap": "^5.1.0"
   }
 }
